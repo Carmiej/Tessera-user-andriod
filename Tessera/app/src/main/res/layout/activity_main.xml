@@ -7,23 +7,6 @@
     tools:context=".MainActivity"
     android:background="@drawable/backgroundimage">
 
-    <SurfaceView
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:id="@+id/cameraPreview"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_below="@+id/cameraPreview"
-        android:layout_marginTop="20dp"
-        android:text="Please Focus On The QR Code"
-        android:textAlignment="center"
-        android:textColor="@android:color/background_light"
-        android:textStyle="bold" />
-
     <Button
         android:id="@+id/scanButton"
         android:layout_width="240dp"
@@ -41,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/container">
-
     </FrameLayout>
 
     <LinearLayout
