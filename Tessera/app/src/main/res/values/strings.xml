@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Tessera</string>
+    <string name="app_name">Driver App</string>
+    <string name="scan_button">Scan QR Code</string>
 </resources>
