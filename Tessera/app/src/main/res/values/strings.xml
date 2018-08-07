@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name"></string>
     <string name="signInToAut">Sign into AUT</string>
-    <string name="aut_shuttle">AUT Shuttle</string>
+    <string name="autShuttle">AUT Shuttle</string>
 </resources>
