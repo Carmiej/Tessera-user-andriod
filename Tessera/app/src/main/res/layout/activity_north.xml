@@ -4,35 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/backgroundimage">
+    tools:context=".NorthCampus">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:fontFamily="@font/roboto_thin"
-        android:text="@string/aut_shuttle"
-        android:textAlignment="textStart"
-        android:textColor="#ffffff"
-        android:textSize="50sp"
-        android:textStyle="bold" />
-
-    <Button
-        android:id="@+id/signInToAut"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="140dp"
-        android:background="#0004ff"
-        android:fontFamily="@font/roboto_thin"
-        android:text="@string/signInToAut"
-        android:textAllCaps="false"
-        android:textColor="#ffffff"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
