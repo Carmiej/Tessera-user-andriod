@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Topup">
+    tools:context=".settings">
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Topup"
-        tools:layout_editor_absoluteX="75dp"
-        tools:layout_editor_absoluteY="229dp" />
+        android:text="Settings"
+        tools:layout_editor_absoluteX="71dp"
+        tools:layout_editor_absoluteY="207dp" />
 </android.support.constraint.ConstraintLayout>

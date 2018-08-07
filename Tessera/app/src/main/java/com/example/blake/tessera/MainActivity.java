@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -29,25 +30,51 @@ public class MainActivity extends AppCompatActivity {
 
 
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Home");
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Settings");
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Topup");
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName("Settings");
 
 
-        Drawer result = new DrawerBuilder()
+        final Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(hamburger)
                 .addDrawerItems(
                         item1,
                         new DividerDrawerItem(),
-                        item2
+                        item2,
+                        new DividerDrawerItem(),
+                        item3
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem item1) {
-                        Intent intent = new Intent(MainActivity.this, Topup.class);
-                        startActivity(intent);
-                        finish();
+
+
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+
+                        if(drawerItem.getIdentifier() == 1)
+                        {
+                            
+                        }
+                        else if(drawerItem.getIdentifier() == 2)
+                        {
+                            Intent intent = new Intent(MainActivity.this, Topup.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if(drawerItem.getIdentifier() == 3)
+                        {
+                            Intent intent = new Intent(MainActivity.this, settings.class);
+                            startActivity(intent);
+                            finish();
+                        }
+
                         return true;
                     }
-                }).build();
+
+                }
+
+
+                ).build();
+
     }
 }
