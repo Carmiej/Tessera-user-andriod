@@ -1,14 +1,18 @@
 package com.example.blake.tessera;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ToolbarWidgetWrapper;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toolbar;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-       PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("Home");
-       PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName("Awesome");
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Home");
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Settings");
 
 
         Drawer result = new DrawerBuilder()
@@ -35,7 +39,15 @@ public class MainActivity extends AppCompatActivity {
                         item1,
                         new DividerDrawerItem(),
                         item2
-                ).build();
-
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem item1) {
+                        Intent intent = new Intent(MainActivity.this, Topup.class);
+                        startActivity(intent);
+                        finish();
+                        return true;
+                    }
+                }).build();
     }
 }
