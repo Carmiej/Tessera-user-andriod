@@ -1,6 +1,14 @@
 package com.example.blake.tessera;
 
+<<<<<<< HEAD
 import android.content.Intent;
+=======
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
+>>>>>>> parent of c64ae8c... Cover Page
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 <<<<<<< HEAD
@@ -28,6 +36,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+<<<<<<< HEAD
     SurfaceView surfaceView;
     CameraSource cameraSource;
     TextView textView;
@@ -35,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 >>>>>>> parent of 17d74f9... Re-start 2018
 
+=======
+>>>>>>> parent of c64ae8c... Cover Page
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
        setSupportActionBar(hamburger);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         signInToAut = (Button) findViewById(R.id.signInToAut);
@@ -113,5 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 >>>>>>> parent of 17d74f9... Re-start 2018
+=======
+>>>>>>> parent of c64ae8c... Cover Page
     }
 }
