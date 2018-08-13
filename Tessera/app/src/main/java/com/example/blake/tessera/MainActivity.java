@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if(drawerItem.getIdentifier() == 1)
                         {
-                            
+
                         }
                         else if(drawerItem.getIdentifier() == 2)
                         {
