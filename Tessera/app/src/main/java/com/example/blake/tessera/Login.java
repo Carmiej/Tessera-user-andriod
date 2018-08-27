@@ -1,6 +1,9 @@
 package com.example.blake.tessera;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,11 +26,24 @@ public class Login extends AppCompatActivity {
     private EditText username;
     private EditText password;
     public static final String BASE_URL = "https://dev-api.tessera-dev.haydenwoodhead.com/api/";
+    public static final String TOKEN_KEY = "token_key";
+    private static final String defaultToken = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Login.this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        if(sharedPref.getString(TOKEN_KEY, defaultToken) != null)
+        {
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
 
         LoginButton = (Button) findViewById(R.id.login);
 
@@ -40,7 +56,6 @@ public class Login extends AppCompatActivity {
 
                 String usernameString = username.getText().toString();
                 String passwordString = password.getText().toString();
-
 
 
                 Gson gson = new GsonBuilder()
@@ -62,6 +77,12 @@ public class Login extends AppCompatActivity {
 
                         if(response.isSuccessful())
                         {
+
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(Login.this);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(TOKEN_KEY, response.body().getToken());
+                            editor.commit();
+
                             Toast.makeText(Login.this, response.body().getToken(), Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(Login.this, MainActivity.class);
