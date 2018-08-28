@@ -8,30 +8,43 @@ import android.os.Bundle;
 import android.support.v7.widget.ToolbarWidgetWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.blake.tessera.Login.BASE_URL;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String TOKEN_KEY = "token_key";
     private static final String defaultToken = null;
+    private String Token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-       android.support.v7.widget.Toolbar hamburger = (android.support.v7.widget.Toolbar) findViewById(R.id.hamburger);
-       hamburger.setBackground(getResources().getDrawable(R.color.colorAccent));
-
-       setSupportActionBar(hamburger);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
 
+        android.support.v7.widget.Toolbar hamburger = (android.support.v7.widget.Toolbar) findViewById(R.id.hamburger);
+        hamburger.setBackground(getResources().getDrawable(R.color.colorAccent));
+
+        setSupportActionBar(hamburger);
 
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Home");
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Topup");
@@ -52,48 +65,73 @@ public class MainActivity extends AppCompatActivity {
                         item4
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
+                                                   @Override
 
 
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                                   public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
 
-                        if(drawerItem.getIdentifier() == 1)
-                        {
+                                                       if (drawerItem.getIdentifier() == 1) {
 
-                        }
-                        else if(drawerItem.getIdentifier() == 2)
-                        {
-                            Intent intent = new Intent(MainActivity.this, Topup.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else if(drawerItem.getIdentifier() == 3)
-                        {
-                            Intent intent = new Intent(MainActivity.this, settings.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else if(drawerItem.getIdentifier() == 4)
-                        {
-                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putString(TOKEN_KEY, null);
-                            editor.commit();
+                                                       } else if (drawerItem.getIdentifier() == 2) {
+                                                           Intent intent = new Intent(MainActivity.this, Topup.class);
+                                                           startActivity(intent);
+                                                           finish();
+                                                       } else if (drawerItem.getIdentifier() == 3) {
+                                                           Intent intent = new Intent(MainActivity.this, settings.class);
+                                                           startActivity(intent);
+                                                           finish();
+                                                       } else if (drawerItem.getIdentifier() == 4) {
+                                                           SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                                           SharedPreferences.Editor editor = sharedPref.edit();
+                                                           editor.putString(TOKEN_KEY, null);
+                                                           editor.commit();
 
-                            Intent intent = new Intent(MainActivity.this, Login.class);
-                            startActivity(intent);
-                            finish();
+                                                           Intent intent = new Intent(MainActivity.this, Login.class);
+                                                           startActivity(intent);
+                                                           finish();
 
-                        }
+                                                       }
 
-                        return true;
-                    }
+                                                       return true;
+                                                   }
 
-                }
+                                               }
 
 
                 ).build();
 
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssz")
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        Api apiService = retrofit.create(Api.class);
+
+        Call<QRToken> call = apiService.GetQR("Token " + sharedPref.getString(TOKEN_KEY, defaultToken));
+        call.enqueue(new Callback<QRToken>() {
+            @Override
+            public void onResponse(Call<QRToken> call, Response<QRToken> response) {
+
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<QRToken> call, Throwable t) {
+
+                Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-}
+    }

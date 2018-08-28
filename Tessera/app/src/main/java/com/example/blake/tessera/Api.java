@@ -3,6 +3,7 @@ package com.example.blake.tessera;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 public interface Api {
@@ -12,6 +13,6 @@ public interface Api {
     @POST("v1/users/authtokens/")
     Call<APIToken> loginUser(@Body LoginData ld);
 
-
-
+    @GET("v1/users/tickets/")
+    Call<QRToken>GetQR(@Header("Authorization") String token);
 }
