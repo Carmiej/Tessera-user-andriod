@@ -2,17 +2,23 @@ package com.example.blake.tessera;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ToolbarWidgetWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -25,6 +31,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 import static com.example.blake.tessera.Login.BASE_URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TOKEN_KEY = "token_key";
     private static final String defaultToken = null;
     private String Token = null;
+    private String qr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,40 +78,36 @@ public class MainActivity extends AppCompatActivity {
                         item4
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                                                   @Override
+                @Override
+                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
+                if (drawerItem.getIdentifier() == 1) {
+                }
+                else if (drawerItem.getIdentifier() == 2) {
+                    Intent intent = new Intent(MainActivity.this, Topup.class);
+                    startActivity(intent);
+                    finish();
+                    }
+                else if (drawerItem.getIdentifier() == 3) {
+                    Intent intent = new Intent(MainActivity.this, settings.class);
+                    startActivity(intent);
+                    finish();
+                    }
+                else if (drawerItem.getIdentifier() == 4) {
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(TOKEN_KEY, null);
+                    editor.commit();
 
-                                                   public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                    Intent intent = new Intent(MainActivity.this, Login.class);
+                    startActivity(intent);
+                    finish();
+                    }
 
+                return true;
+                }
 
-                                                       if (drawerItem.getIdentifier() == 1) {
-
-                                                       } else if (drawerItem.getIdentifier() == 2) {
-                                                           Intent intent = new Intent(MainActivity.this, Topup.class);
-                                                           startActivity(intent);
-                                                           finish();
-                                                       } else if (drawerItem.getIdentifier() == 3) {
-                                                           Intent intent = new Intent(MainActivity.this, settings.class);
-                                                           startActivity(intent);
-                                                           finish();
-                                                       } else if (drawerItem.getIdentifier() == 4) {
-                                                           SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                                                           SharedPreferences.Editor editor = sharedPref.edit();
-                                                           editor.putString(TOKEN_KEY, null);
-                                                           editor.commit();
-
-                                                           Intent intent = new Intent(MainActivity.this, Login.class);
-                                                           startActivity(intent);
-                                                           finish();
-
-                                                       }
-
-                                                       return true;
-                                                   }
-
-                                               }
-
-
+        }
                 ).build();
 
         Gson gson = new GsonBuilder()
@@ -120,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
 
                     Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
+                    qr = response.body().getQrCode().toString();
+                    generateQR(qr);
 
                 } else {
                     Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
@@ -133,5 +144,25 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
+    public void generateQR(String qr)
+    {
+        ImageView image;
+        String qrCode = this.qr;
+        image = (ImageView) findViewById(R.id.image);
+
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try{
+            BitMatrix bitMatrix = multiFormatWriter.encode(qrCode, BarcodeFormat.QR_CODE,200, 200);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            image.setImageBitmap(bitmap);
+        }
+        catch (WriterException e)
+        {
+            e.printStackTrace();
+        }
     }
+}
