@@ -10,6 +10,7 @@ import android.support.v7.widget.ToolbarWidgetWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String defaultToken = null;
     private String Token = null;
     private String qr;
+    private Integer balance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
 
-                    Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
                     qr = response.body().getQrCode().toString();
-                    generateQR(qr);
+                    balance = response.body().getCurrentValue();
+                    generateQR(qr, balance);
 
                 } else {
                     Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
@@ -147,11 +150,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void generateQR(String qr)
+    public void generateQR(String qr, Integer balancenum)
     {
+        Integer balancenumber = balancenum;
         ImageView image;
+        TextView balance;
         String qrCode = this.qr;
         image = (ImageView) findViewById(R.id.image);
+        balance = (TextView) findViewById(R.id.Balance);
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try{
@@ -164,5 +170,7 @@ public class MainActivity extends AppCompatActivity {
         {
             e.printStackTrace();
         }
+
+        balance.setText("$"+ balancenumber);
     }
 }
