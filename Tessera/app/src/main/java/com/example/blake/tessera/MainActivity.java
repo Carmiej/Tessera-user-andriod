@@ -38,6 +38,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static com.example.blake.tessera.Login.BASE_URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,10 +50,55 @@ public class MainActivity extends AppCompatActivity {
     private String Token = null;
     private String qr;
     private Integer balance;
+    private Timer autoUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    public void generateQR(String qr, Integer balancenum)
+    {
+        Integer balancenumber = balancenum;
+        ImageView image;
+        TextView balance;
+        String qrCode = this.qr;
+        image = (ImageView) findViewById(R.id.image);
+        balance = (TextView) findViewById(R.id.Balance);
+
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try{
+            BitMatrix bitMatrix = multiFormatWriter.encode(qrCode, BarcodeFormat.QR_CODE,200, 200);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            image.setImageBitmap(bitmap);
+        }
+        catch (WriterException e)
+        {
+            e.printStackTrace();
+        }
+
+        balance.setText("$"+ balancenumber);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        autoUpdate = new Timer();
+        autoUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateHTML();
+                    }
+                });
+            }
+        }, 0, 40000); // updates each 40 secs
+    }
+
+    private void updateHTML(){
         setContentView(R.layout.activity_main);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -80,36 +128,36 @@ public class MainActivity extends AppCompatActivity {
                         item4
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                @Override
-                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                                                   @Override
+                                                   public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
-                if (drawerItem.getIdentifier() == 1) {
-                }
-                else if (drawerItem.getIdentifier() == 2) {
-                    Intent intent = new Intent(MainActivity.this, Topup.class);
-                    startActivity(intent);
-                    finish();
-                    }
-                else if (drawerItem.getIdentifier() == 3) {
-                    Intent intent = new Intent(MainActivity.this, settings.class);
-                    startActivity(intent);
-                    finish();
-                    }
-                else if (drawerItem.getIdentifier() == 4) {
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString(TOKEN_KEY, null);
-                    editor.commit();
+                                                       if (drawerItem.getIdentifier() == 1) {
+                                                       }
+                                                       else if (drawerItem.getIdentifier() == 2) {
+                                                           Intent intent = new Intent(MainActivity.this, Topup.class);
+                                                           startActivity(intent);
+                                                           finish();
+                                                       }
+                                                       else if (drawerItem.getIdentifier() == 3) {
+                                                           Intent intent = new Intent(MainActivity.this, settings.class);
+                                                           startActivity(intent);
+                                                           finish();
+                                                       }
+                                                       else if (drawerItem.getIdentifier() == 4) {
+                                                           SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                                           SharedPreferences.Editor editor = sharedPref.edit();
+                                                           editor.putString(TOKEN_KEY, null);
+                                                           editor.commit();
 
-                    Intent intent = new Intent(MainActivity.this, Login.class);
-                    startActivity(intent);
-                    finish();
-                    }
+                                                           Intent intent = new Intent(MainActivity.this, Login.class);
+                                                           startActivity(intent);
+                                                           finish();
+                                                       }
 
-                return true;
-                }
+                                                       return true;
+                                                   }
 
-        }
+                                               }
                 ).build();
 
         Gson gson = new GsonBuilder()
@@ -130,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
 
-                   // Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(MainActivity.this, response.body().getQrCode(), Toast.LENGTH_SHORT).show();
                     qr = response.body().getQrCode().toString();
                     balance = response.body().getCurrentValue();
                     generateQR(qr, balance);
@@ -147,30 +195,14 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Invalid Credentials, Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
-    public void generateQR(String qr, Integer balancenum)
-    {
-        Integer balancenumber = balancenum;
-        ImageView image;
-        TextView balance;
-        String qrCode = this.qr;
-        image = (ImageView) findViewById(R.id.image);
-        balance = (TextView) findViewById(R.id.Balance);
-
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        try{
-            BitMatrix bitMatrix = multiFormatWriter.encode(qrCode, BarcodeFormat.QR_CODE,200, 200);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            image.setImageBitmap(bitmap);
-        }
-        catch (WriterException e)
-        {
-            e.printStackTrace();
-        }
-
-        balance.setText("$"+ balancenumber);
+    @Override
+    public void onPause() {
+        autoUpdate.cancel();
+        super.onPause();
     }
+
+
 }
+
