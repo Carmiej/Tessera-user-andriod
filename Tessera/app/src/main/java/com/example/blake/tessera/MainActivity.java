@@ -45,6 +45,7 @@ import static com.example.blake.tessera.Login.BASE_URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    //initialising variables
     public static final String TOKEN_KEY = "token_key";
     private static final String defaultToken = null;
     private String Token = null;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Generates the QRcode and display it to the page
     public void generateQR(String qr, Integer balancenum)
     {
         Integer balancenumber = balancenum;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         balance.setText("$"+ balancenumber);
     }
 
+    //Timer to refresh the page every 40 secconds
     @Override
     public void onResume() {
         super.onResume();
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         }, 0, 40000); // updates each 40 secs
     }
 
+    //what will be updated and the main body of the page.
     private void updateHTML(){
         setContentView(R.layout.activity_main);
 
@@ -109,12 +113,14 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(hamburger);
 
+
+        //items for the hamburger menu
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Home");
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Topup");
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName("Settings");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName("Logout");
 
-
+        //adding the hamburger menu
         final Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(hamburger)
@@ -131,35 +137,38 @@ public class MainActivity extends AppCompatActivity {
                                                    @Override
                                                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
-                                                       if (drawerItem.getIdentifier() == 1) {
-                                                       }
-                                                       else if (drawerItem.getIdentifier() == 2) {
-                                                           Intent intent = new Intent(MainActivity.this, Topup.class);
-                                                           startActivity(intent);
-                                                           finish();
-                                                       }
-                                                       else if (drawerItem.getIdentifier() == 3) {
-                                                           Intent intent = new Intent(MainActivity.this, settings.class);
-                                                           startActivity(intent);
-                                                           finish();
-                                                       }
-                                                       else if (drawerItem.getIdentifier() == 4) {
-                                                           SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                                                           SharedPreferences.Editor editor = sharedPref.edit();
-                                                           editor.putString(TOKEN_KEY, null);
-                                                           editor.commit();
+                if (drawerItem.getIdentifier() == 1) {
 
-                                                           Intent intent = new Intent(MainActivity.this, Login.class);
-                                                           startActivity(intent);
-                                                           finish();
-                                                       }
+                }
+                else if (drawerItem.getIdentifier() == 2) {
+                    Intent intent = new Intent(MainActivity.this, Topup.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else if (drawerItem.getIdentifier() == 3) {
+                    Intent intent = new Intent(MainActivity.this, settings.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else if (drawerItem.getIdentifier() == 4) {
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(TOKEN_KEY, null);
+                    editor.commit();
 
-                                                       return true;
-                                                   }
+                    Intent intent = new Intent(MainActivity.this, Login.class);
+                    startActivity(intent);
+                    finish();
+                }
 
-                                               }
+                return true;
+                }
+
+            }
                 ).build();
 
+
+        //all of the required things for backend scripts to be run
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssz")
                 .create();
