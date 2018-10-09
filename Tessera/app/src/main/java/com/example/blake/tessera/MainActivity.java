@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 0, 40000); // updates each 40 secs
+        }, 0, 20000); // updates each 40 secs
     }
 
     //what will be updated and the main body of the page.
